@@ -1,0 +1,145 @@
+<p>
+    <b>Aplica&#231;&#227;o 1. - Gravando com a placa de som.</b>
+</p>
+<p align="JUSTIFY">
+    &#201; relativamente f&#225;cil gravar um som usando um computador. De qualquer forma, muitos softwares que capturam som n&#227;o s&#227;o muito usados
+    para se estudar DSP, porque ele assumem que o usu&#225;rio n&#227;o esta interessado no "baixo nivel" de detalhes, tal como o numero de bits por amostra.
+    Mais h&#225; v&#225;rias alternativas que podem providenciar esse tipo de informa&#231;&#245;es. H&#225; dois softwares gr&#225;tis e de codigo aberto para
+    manipula&#231;&#227;o que s&#227;o o Audacity e o Sox. Enquanto o Sox &#233; muito usado para convers&#227;o entre formatos de arquivos e trabalhar a
+    partir da linha de comando, Audacity &#233; adotado aqui porque possui uma interface gr&#225;fica que permite, por exemplo, monitorar a grava&#231;&#227;o
+    e evita a satura&#231;&#227;o do ADC, que faria distor&#231;&#245;es no som devido ao corte dessas amplitudes.
+</p>
+<p align="JUSTIFY">
+    Figura 1.26 mostra um pequeno segmento de &#225;udio gravado com as op&#231;&#245;es padr&#227;o de freq&#252;&#234;ncia de amostragem Fs = 44,1 kHz e
+    n&#250;mero b = 32 bits por amostra em ponto flutuante, como indicado pela letra A na figura. O menu Editar - Prefer&#234;ncias - Qualidade de Audacity
+    permite alterar esses valores. Outra op&#231;&#227;o para mudar Fs &#233; a "taxa Project" na letra B da Figura 1.26. Os medidores de n&#237;vel de
+    indicados com a letra C s&#227;o ativadas durante a grava&#231;&#227;o e reprodu&#231;&#227;o e, neste caso, sugere que a amplitude do sinal era cortadas
+    devido &#224; satura&#231;&#227;o do ADC. Alternativamente, isto pode ser visualizado atrav&#233;s do menu Ver- Mostrar Clipping. Cada vez que uma nova
+    grava&#231;&#227;o come&#231;a (clicando no bot&#227;o indicado pela letra D), a trilha de &#225;udio tem o Fs e b imposta pelas op&#231;&#245;es
+    padr&#227;o atual. A maioria das placas de som tem dois canais e pode gravar em est&#233;reo, mas aqui &#233; assumido que apenas um canal &#233; de
+    interesse e os arquivos s&#227;o mono.
+</p>
+<p align="CENTER">
+    <div align="center"><img src="./Assuntos/Application1/ap1-1.png"></div> 
+</p>
+<p align="CENTER">
+    Figura 1.26: Exemplo de som gravado no Fs = 44,1 kHz com o editor de som Audacity.
+</p>
+<p align="JUSTIFY">
+    Audacity pode salvar um sinal em uma variedade de formatos de arquivo, como MP3, usando o menu Exportar. Nosso objetivo &#233; para ler mais tarde o
+    arquivo salvo em outro software ( Matlab / Octave ,etc) , de modo MP3 devem ser evitados e de especial interesse aqui s&#227;o " wav" (na verdade, o
+    Formato WAVE, uma inst&#226;ncia de formato de arquivo RIFF da Microsoft) e cru ( cabe&#231;alho menos). O formato " wav" &#233; apenas um wrapper para
+    muitos codecs. Em outras palavras , dentro de um " wav " arquivo pode-se encontrar dados n&#227;o comprimidos exigindo centenas de kilobits para
+    representar cada segundo ( kbps) de &#225;udio, bem dados altamente comprimido que solicitam menos de cinco kbps.
+</p>
+<p align="JUSTIFY">
+    A menos que o tamanho do arquivo deve ser minimizada, para maior portabilidade , &#233; melhor usar um formato n&#227;o comprimido "PCM" . Devido &#224;
+    sua ado&#231;&#227;o em comunica&#231;&#245;es digitais, o resultado da convers&#227;o A / D , por vezes, &#233; chamado de modula&#231;&#227;o codificada
+    por pulso (PCM). Assim , PCM pode ser visto como um codec , mas a sua sa&#237;da &#233; equivalente a um sinal amostrado a simplesmente Fs e quantizada (ou
+    codificado ) com b bits / amostra. Se o quantizador adoptada &#233; uniforme, o PCM &#233; chamado linear . O PCM linear &#233; o melhor formato com
+</p>
+<p align="JUSTIFY">
+    respeito &#224; portabilidade , mas tamb&#233;m h&#225; dois populares PCMs n&#227;o lineares. Como a distribui&#231;&#227;o de probabilidade de longos
+    segmentos de sinais de voz &#233; aproximadamente Laplaciano , n&#227;o uniforme , o quantizador utilizado na telefonia digital &#233; n&#227;o uniforme.
+    Estes quantizadores s&#227;o baseadas em curvas n&#227;o- lineares ( aproximadamente logar&#237;tmica ) chamado A-law e &#956;-law. Figura 1.27 mostra
+    algumas op&#231;&#245;es quando o usu&#225;rio escolhe exporta&#231;&#227;o - Outros arquivos compactados (em "tipo") e depois em Op&#231;&#245;es.
+</p>
+<p align="CENTER">
+    <div align="center"><img src="./Assuntos/Application1/ap1-2.png"></div> 
+</p>
+<p align="CENTER">
+    Figura 1.27: Algumas op&#231;&#245;es Audacity para salvar um arquivo WAVE descompactado. Os dois n&#227;o-linear PCMs s&#227;o indicados.
+</p>
+<p align="JUSTIFY">
+    Assim, usar o Audacity para gravar um som com Fs = 8 kHz e export&#225;-lo como um arquivo myvoice.wav nomeado no "WAV (Microsoft) assinado de 16 bits"
+    formato. Depois disso, leia com Matlab / Octave usando:
+</p>
+<p align="JUSTIFY">
+    [x , Fs , b ]= wavread ( ' myvoice .wav ') ;
+</p>
+<p align="JUSTIFY">
+    Pode-se observar que Fs = 8000 e b = 16, como registado. Observe que, por padrão, o função wavread gera amostras em ponto flutuante e normaliza-los para estar dentro o intervalo [-1, 1]. Se os valores inteiros reais são de interesse, Matlab permite usar
+</p>
+<p align="JUSTIFY">
+    [ x2 , Fs , b ]= wavread ( ' myvoice . wav ' , ' native ') ;
+</p>
+
+<p align="JUSTIFY">
+	Usando os dois &#250;ltimos comandos e comparando min ( x ) , max ( x ) e min ( x2 ) , max ( x2 ), no caso de um ficheiro de &#225;udio espec&#237;fico , o
+	n&#250;mero inteiro ( nativo ) valoriza -8488 ( min ) e 5877 (max) foram normalizadas para -0,2590 e 0,1794 , respectivamente , quando n&#227;o estiver
+	usando a op&#231;&#227;o "Nativo" . A normaliza&#231;&#227;o consiste em dividir os valores inteiros nativas por 2b - 1 , o qual leva em conta que estes
+	valores s&#227;o originalmente dentro do intervalo [ - 2b - 1 , 2-B - 1 ] . para exemplo , neste caso, b = 16 e 5877/215 &#8776; 0,1794 .
+</p>
+<p align="JUSTIFY">
+	No caso do arquivo tinha usado A-law PCM n&#227;o- linear , Matlab daria a mensagem de erro :
+</p>
+<p align="JUSTIFY">
+	Formato de compress&#227;o de dados ( CCITT -lei ) n&#227;o &#233; suportado.
+</p>
+<p align="JUSTIFY">
+	e Octave :
+</p>
+<p align="JUSTIFY">
+	erro: wavread : formato de amostra 0x6 n&#227;o &#233; suportado
+</p>
+<p align="JUSTIFY">
+	Agora , sugere-se a ficar mais familiarizado com arquivos sem cabe&#231;alho utilizando o Audacity para salvar um arquivo de som como "raw" . Pode ser
+	&#250;til para verificar ap&#234;ndice B.5 para mais detalhes sobre como a informa&#231;&#227;o &#233; organizada em arquivos bin&#225;rios. Depois de
+	gravar no Audacity , escolha Export- Outros arquivos compactados ( em "tipo" ), como na Figura 1.27 , mas desta vez selecione o cabe&#231;alho " RAW (
+	cabe&#231;alho menos) " em vez de " WAV (Microsoft) " . Para a codifica&#231;&#227;o , selecione " Assinado 16 bits PCM " , como antes, eo nome do arquivo
+	' myvoice_raw.wav ' . Neste caso , seria ser s&#225;bio para usar outra extens&#227;o de arquivo e nome&#225;-la 'myvoice.raw', por exemplo. mas o
+	finalidade do uso "wav" &#233; deixar claro que a extens&#227;o, por si s&#243; n&#227;o pode garantir a formato de arquivo &#233; o esperado.
+</p>
+<p align="JUSTIFY">
+	Neste exemplo em particular, os tamanhos dos arquivos s&#227;o 29, 228 e 29, 184 para o WAVE e formatos RAW, respectivamente. Na verdade, apesar de uma
+	onda, possivelmente, ter um sofisticado estrutura com v&#225;rias se&#231;&#245;es (blocos), a maioria deles tem um &#250;nico peda&#231;o e um
+	cabe&#231;alho constitu&#237;do pelos primeiros 44 bytes, que &#233; a diferen&#231;a entre os dois tamanhos dado que ambos t&#234;m os mesmos 29184/2 =
+	14592 amostras de dois bytes cada.
+</p>
+<p align="JUSTIFY">
+	Usando o wavread comando para o arquivo bruto iria gerar mensagens de erro no Matlab / Octave. Baseado no Ap&#234;ndice B.5.4, o c&#243;digo a seguir
+	l&#234; corretamente o amostras:
+</p>
+<p align="JUSTIFY">
+	<pre>
+	fp = fopen ('myvoice_raw . wav','rb') ; % open for reading in binary
+	</pre>
+</p>
+<p align="JUSTIFY">
+	x = fread ( fp , Inf , ' int16 ') ; % read all samples as signed 16 - bits
+</p>
+<p align="JUSTIFY">
+	fclose ( fp ) ; % close the file
+</p>
+<p align="JUSTIFY">
+	Como um teste de sanidade, pode-se ler as amostras do arquivo WAVE, pular seu cabe&#231;alho e comparar com o resultado da wavread com Listagem 1.14 em
+	Matlab.
+</p>
+<p align="JUSTIFY">
+	fp = fopen ( ' myvoice . wav ' , ' rb ') ; % open for reading in binary
+</p>
+<p align="JUSTIFY">
+	x = fread ( fp , Inf , ' int16 ') ; % read all samples as signed 16 - bits
+</p>
+<p align="JUSTIFY">
+	fclose ( fp ) ; % close the file
+</p>
+<p align="JUSTIFY">
+	x (1:22) =[]; % eliminate the 44 - bytes header
+</p>
+<p align="JUSTIFY">
+	[ x2 , Fs , b ]= wavread ( ' myvoice . wav ' , ' native ') ;
+</p>
+<p align="JUSTIFY">
+	x2 = double ( x2 ) ; % convert integer to double for easier manipulation
+</p>
+<p align="JUSTIFY">
+	max ( abs (x - x2 ) ) % result is 0 , indicating they are identical
+</p>
+<p align="JUSTIFY">
+	A vantagem de usar ONDA &#233; que o cabe&#231;alho informa Fs, b, se o seu mono ou aparelho de som, etc Al&#233;m disso, o formato WAVE cuida de
+	ordena&#231;&#227;o (ver Anexo B.5.3). N&#227;o usar wavread, escrever c&#243;digo em Matlab / Octave para abrir um arquivo WAVE (com apenas 1 peda&#231;o)
+	e extrair Fs, b e as amostras como inteiros. Este c&#243;digo pode ser usado por Usu&#225;rios Octave para imitar a op&#231;&#227;o nativa em wavread do
+	Matlab. Pode ser &#250;til para ler B.5.5 Ap&#234;ndice e usar o c&#243;digo laps_dump.c companheiro, o que pode ser compilado com a maioria dos
+	compiladores C. Uma breve descri&#231;&#227;o do cabe&#231;alho WAVE &#233; fornecido em [url1wav].
+</p>

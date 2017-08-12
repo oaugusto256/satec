@@ -1,0 +1,61 @@
+<p>
+	<strong>Aplica&ccedil;&atilde;o 3</strong>
+</p>
+
+  Estimando lat&ecirc;ncia usando a placa de som, Audacity e um cabo de auto-retorno. O objetivo aqui &eacute; para a pr&aacute;tica de lidar com sinais digitais e anal&oacute;gicos, interface Audacity e Matlab / Octave. Um cabo de &aacute;udio e um &uacute;nico computador (com o funcionamento do sistema de som) &eacute; tudo o que &eacute; necess&aacute;rio para muitas experi&ecirc;ncias interessantes. O usu&aacute;rio &eacute; convidado a construir ou comprar um cabo com os conectores apropriados para sua / seu computador. Na maioria dos casos, um &quot;3,5 mil&iacute;metros a 3,5 mm macho cabo de &aacute;udio macho&quot; &eacute; o requerido, conforme indicado na Figura 1. Um cabo de canal &uacute;nico (mono) pode ser suficiente, mas os cabos de som tem quase o mesmo custo e pode ser usado em experimentos mais elaborados.</p>
+
+<p>
+	<div align="center"><img src="./Assuntos/Application3/figura1.png"/></div>
+</P>
+<p align="CENTER">
+    Figura 1:  Configura&ccedil;&atilde;o para loopback do sistema de som usando um cabo de &aacute;udio, que &eacute; conectado &agrave; entrada de microfone (ou, alternativamente, &agrave; entrada de linha) e &agrave; sa&iacute;da de alto-falante (ou para a sa&iacute;da de linha).
+</p>
+
+<p>A tarefa aqui &eacute; para estimar a lat&ecirc;ncia ou canal de atraso, o que &eacute; o intervalo de tempo entre o sinal &eacute; transmitido e a sua chegada a um determinado receptor, depois de passar atrav&eacute;s de um canal. Neste caso espec&iacute;fico, o canal &eacute; composto pelo hardware da placa de som (buffers, etc) e os drivers de dispositivo usado (software de baixo n&iacute;vel que interage com o hardware) e software de aplica&ccedil;&atilde;o (Audacity, neste caso). Em processamento de som, a lat&ecirc;ncia &eacute; especialmente importante quando overdubbing, i. e., a grava&ccedil;&atilde;o de uma faixa durante a reprodu&ccedil;&atilde;o de outros. Uma descri&ccedil;&atilde;o detalhada de ensaios de lat&ecirc;ncia com Audacity podem ser encontradas em [url1lat].   Para ter um melhor controle da placa de som, &eacute; importante para desativar todos os efeitos especiais e melhorias para dispositivos tanto de grava&ccedil;&atilde;o e reprodu&ccedil;&atilde;o, tais como autom&aacute;tico </p>
+<p>
+	<div align="center"><img src="./Assuntos/Application3/figura2.png"/></div>
+</P>
+<p align="CENTER">
+    Figura 2:  Exemplo de op&ccedil;&otilde;es fornecidas pelo Windows e mesa de som. Todas as melhorias  para dispositivos de grava&ccedil;&atilde;o e reprodu&ccedil;&atilde;o deve ser desativado.</p>
+
+
+<p>ganhar o controle para o sinal ADC entrada. Figura 2 fornece imagens a partir do Windows, mas os usu&aacute;rios de outros sistemas operacionais deve ser capaz de encontrar a forma de escolher as melhores op&ccedil;&otilde;es de som.   Depois de ter certeza que a melhor configura&ccedil;&atilde;o para seu sistema de som foi escolhido, a tarefa agora &eacute; gerar algumas amostras de um trem peri&oacute;dico de impulsos. Em vez de impulsos, o menu Audacity &quot;Gerar - Clique Track&quot; fornece uma janela de di&aacute;logo com outras op&ccedil;&otilde;es. Mas aqui a sugest&atilde;o &eacute; usar Matlab / Octave e criar um sinal com N-tempo discreto impulsos &#948; [n]. Note-se que o sinal anal&oacute;gico correspondente a &#948; [n] nunca ser&aacute; o &#948; de tempo cont&iacute;nuo te&oacute;rica (t). Por exemplo,supondo que a reconstru&ccedil;&atilde;o da ordem zero (ver figura 1.7), a amplitude de &#948; [n] iria ser mantida constante durante todo o intervalo de amostragem Ts. Consciente desta limita&ccedil;&atilde;o, Listing 1.19 gera um trem de N impulsos discretos no tempo e salva em um arquivo WAVE.</p>
+
+<p>
+	<strong>Fs = 44100; % sampling frequency</strong>  
+	<strong>Ts = 1/ Fs ; % sampling period</strong>  
+	<strong>Timpulses = 0.25; % interval between impules in seconds</strong>
+	<strong>L = floor ( Timpulses / Ts ) ; % number of samples between impulses</strong>  
+	<strong>N = 4; % number of impulses</strong>  
+	<strong>impulseTrain = zeros ( N *L ,1) ; % allocate space with zeros</strong>
+	<strong>b =16; % number of bits per sample</strong>
+	<strong>amplitude = 2^( b -1) -1; % impulse amplitude , max signed int</strong>
+	<strong>impulseTrain (1: L : end ) = amplitude ; % generate impulses</strong>
+	<strong>wavwrite ( impulseTrain , Fs ,b , ' impulses . wav ') % save WAVE RIFF</strong></p>
+
+<p>	Abrindo o arquivo gerado com o Audacity deve levar a Figura 3. Observe as amplitudes foram normalizadas eo primeiro impulso mal aparece. Neste caso, tal como indicado pela letra F na Figura 3, a regi&atilde;o de selec&ccedil;&atilde;o inicia aproximadamente a 1 s. A interface &eacute; amig&aacute;vel e as letras C e D indicam como alternar entre ampliando o sinal e permitindo que o cursor, respectivamente. Depois de um segmento &eacute; selecionado, letra E indica como zoom-lo facilmente para caber na sele&ccedil;&atilde;o. Em vez de segundos (em letra F), &agrave;s vezes &eacute; conveniente a utiliza&ccedil;&atilde;o de &quot;amostras&quot;. Usando o bot&atilde;o de play indicado com a letra A executa o arquivo.</p>
+
+<p>
+	<div align="center"><img src="./Assuntos/Application3/figura3.png"/></div>
+</P>
+
+<p align="CENTER">
+    Figura 3:  Janela Audacity depois de ler o arquivo 'impulses.wav'.</p>
+
+<p>
+	<div align="center"><img src="./Assuntos/Application3/figura4.png"/></div>
+</P>
+
+<p align="CENTER">
+    Figura 4:  Janela Audacity ap&oacute;s a grava&ccedil;&atilde;o simult&acirc;nea e jogar 'impulses.wav' com um auto-retorno.</p>	
+
+<p>Neste ponto, uma caracter&iacute;stica do Audacity que &eacute; &uacute;til para overdubbing pode ser usado para ativar simultaneamente o DAC e ADC : durante a grava&ccedil;&atilde;o , o Audacity tamb&eacute;m tem todos os sinais que s&atilde;o &quot; abertos &quot; (neste caso , o &quot; impulso &quot; do sinal). Com o cabo de &aacute;udio conectado em loopback , iniciar a grava&ccedil;&atilde;o ( e reprodu&ccedil;&atilde;o) simplesmente usando o bot&atilde;o ( letra B) , parando depois de um segundo. A situa&ccedil;&atilde;o final deve ser semelhante ao da Figura 1.32 . A partir do c&oacute;digo utilizado para gerar ' impulses.wav ' pode ser visto que os impulsos s&atilde;o separados por Fs / 4 = 11025 amostras ( a primeira &eacute; de n = 1 , o segundo com n = 11026 e assim por diante ) . Esta informa&ccedil;&atilde;o foi utilizada para impor a sele&ccedil;&atilde;o de partida ( letra F na Figura 1.31) em amostra de 11.026 na Figura 1.32 ( &eacute; irrelevante aqui, mas lembro que o primeiro &iacute;ndice em Matlab / Octave &eacute; 1, mas 0 no Audacity ) . O fim da selec&ccedil;&atilde;o foi localizada aproximadamente no in&iacute;cio do segundo impulso do sinal gravado ( trama inferior , identificado como &quot; faixa de &aacute;udio &quot; ) . Neste caso , o n&uacute;mero de amostras desta selec&ccedil;&atilde;o indicam que a lat&ecirc;ncia era de aproximadamente 2102 &times; Ts &#8776; 47,66 ms .</p>
+<p>
+	<div align="center"><img src="./Assuntos/Application3/figura5.png"/></div>
+</P>
+<p align="CENTER">
+    Figura 4:  Zoom da resposta para o segundo impulso na Figura 3.</p>
+<p>Neste ponto, pode ser &uacute;til para exportar o sinal gravado como um arquivo WAVE para ser lido em Matlab / Octave. Primeiro, voc&ecirc; pode fechar a janela com o sinal de &quot;impulsos&quot; (caso contr&aacute;rio, o Audacity perguntar&aacute; se os dois arquivos devem ser unidas) e use o menu &quot;Export&quot;. Assumindo que o nome do ficheiro de sa&iacute;da foi impulseResponses.wav, o comando h = wavread ('impulseResponses.wav') pode ser utilizado para gerar o zoom da segunda resposta de impulso na Figura 1.33. O conceito de resposta de impulso &eacute; muito importante, tal como discutido no Cap&iacute;tulo 3.   Devido &agrave; amplitude m&aacute;xima absoluta ocorre com n = 13037 na Figura 1.33 e o impulso correspondente situa-se em n = 11026, uma outra estimativa da lat&ecirc;ncia &eacute; (13.037-11.026) Ts &#8776; 45,6 ms. Um detalhe &eacute; que para a cria&ccedil;&atilde;o Figura 1.33, a op&ccedil;&atilde;o 'nativa' de wavread do Matlab foi usado para evitar a normaliza&ccedil;&atilde;o e, conseq&uuml;entemente, o valor m&iacute;nimo do sinal &eacute;-2b-1 = -32768 n&atilde;o -1.</p>
+
+
+

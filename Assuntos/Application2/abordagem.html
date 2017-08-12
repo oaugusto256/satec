@@ -1,0 +1,110 @@
+<p>
+    <strong>Aplica&#231;&#227;o 2.</strong>
+    -<strong> Gravar som com Matlab</strong>.
+</p>
+<p>
+
+   		Esta aplica&#231;&#227;o discute como gravar o som diretamente com Matlab, que tem diversas fun&#231;&#245;es para lidar com a grava&#231;&#227;o de som e
+    reprodu&#231;&#227;o. Voc&#234; pode verificar <strong>soundsc, audiorecorder, wavplay e wavrecord</strong>, por exemplo. Algumas fun&#231;&#245;es s&#243;
+    funcionam no Windows.<br>
+
+	Octave tem fun&#231;&#245;es tais como registro e som e seu apoio ao som &#233; mais natural em Linux. Existem solu&#231;&#245;es como    <strong><a href="http://www.playrec.co.uk/">[url1rec]</a><br>
+</strong> para gravar e reproduzir som em Octave em execu&#231;&#227;o no Windows, mas a instala&#231;&#227;o n&#227;o &#233; trivial.<br>
+    O c&#243;digo a seguir foi utilizado em Matlab para gravar 5 segundos de um (mono) som do canal a uma taxa de amostragem de 11.025 Hz, usando 16 bits para
+    representar cada amostra:
+</p>
+<p>
+	<div align="center"><img src="./Assuntos/Application2/figura1.png"/></div>
+    <strong>r = audiorecorder (11025 ,16 ,1) ; % create audiorecorder object </strong><br>
+    <strong>record (r ,5) ; % record 5 seconds and store inside object r</strong>
+</p>
+<p>
+Pode-se utilizar o <strong>play</strong><em><strong> </strong></em><strong>(r)</strong> para escutar o som gravado ou    <strong>y = getaudiodata (r, 'int16')</strong> para obter as amostras a partir do objecto audiorecorder. No entanto, se um destes comandos segue
+imediatamente <strong>record (R, 5)</strong>, o erro pode ser gerado:??? <strong>Cannot retrieve audio data while </strong>    <strong>recording is in progress</strong><strong> </strong>(N&#227;o &#233; poss&#237;vel recuperar os dados de &#225;udio durante a grava&#231;&#227;o
+est&#225; em andamento). Isto significa que o software ainda estava gravando quando tentou executar o segundo comando. Uma alternativa &#233; usar    <strong>recordblocking</strong> como se segue:
+</p>
+<p>
+    <strong>r = audiorecorder (11025 ,16 ,1) ; % create audiorecorder object </strong><br>
+    <strong>recordblocking (r ,5) ; % record 5 seconds and store inside r </strong><br>
+    <strong>play ( r ) % playback the sound </strong><br>
+    <strong>y = getaudiodata (r , ' int16 ') ; % extract samples as int16 </strong><br>
+    <strong>plot ( y ) ; % show the graph</strong><br>
+</p>
+<p>
+    Note-se que y no exemplo acima &#233; uma matriz com elementos das int16 tipo, i. e., 2 bytes por amostra. Isso economiza espa&#231;o de armazenamento
+    quando comparados com os n&#250;meros reais convencionais armazenados em duplas (8 bytes) cada um, mas limita as manipula&#231;&#245;es. Por exemplo, o
+comando <strong>soundsc (y, 11025)</strong> gera uma mensagem de erro, se y &#233; Int16. Em tais casos, uma convers&#227;o como    <strong>y = double (y)</strong> pode ser usado antes de invocar <strong>soundsc </strong>(uso whos y para verificar se o armazenamento tem quadruplicou).
+</p>
+<p>
+    Para escrever y para um 16-bits por amostra de arquivo <strong>WAV</strong> e l&#234;-lo de volta, use:
+</p>
+<p>
+    <strong>yd = double ( y ) ; % convert from int16 ( y from getaudiodata ) </strong><br>
+    <strong>yd = yd / max ( abs ( yd ) ) ; % need to normalize </strong><br>
+    <strong>wavwrite ( yd ,11025 ,16 , ' somename . wav ') % write as 16 - bits </strong><br>
+    <strong>z = wavread ( ' somename . wav ' , ' native ') ; % avoid normalization</strong><br>
+</p>
+<p>
+    mas o comando <strong>double (z). / double (y)</strong> mostra que a normaliza&#231;&#227;o utilizada por wavwrite feito z aproximadamente tr&#234;s vezes
+    y. A caixa de ferramentas Voicebox ([<strong><a href="http://www.ee.ic.ac.uk/hp/staff/dmb/voicebox/voicebox.html">url1vois</a>]) tem fun&#231;&#245;es readwav e writewav que s&#227;o mais espertos do Matlab do que diz respeito a evitar a
+    normaliza&#231;&#227;o.
+</p>
+<p>
+    Algumas placas de som permitem a opera&#231;&#227;o full-duplex, i. e., gravando e tocando ao mesmo tempo. Normalmente, a frequ&#234;ncia de amostragem
+    deve ser o mesmo para ambas as opera&#231;&#245;es. No Windows pode-se tentar a fun&#231;&#227;o wavplay com a op&#231;&#227;o "async", como exemplificado
+    na Listagem 1.17.
+</p>
+<p>
+    <strong>Fs = 11025; </strong><br>
+    <strong>% define sampling rate ( Hz ) </strong><br>
+    <strong>fc = 1500; % cosine frequency ( Hz ) </strong><br>
+    <strong>numSamples = 1000; % number ( integer ) of samples </strong><br>
+    <strong>outputSignal = cos (2* pi * fc / Fs *(0: numSamples ) ) ; % signal sent to DAC</strong><br>
+    <strong>while 1 % infinite loop , stop with CTRL + C </strong><br>
+    <strong> wavplay ( outputSignal , Fs , ' async ') ; % playback via DAC </strong><br>
+    <strong> inputSignal = wavrecord ( numSamples , Fs , ' int16 ') ; % record ( ADC ) </strong><br>
+    <strong> subplot (211) , plot ( inputSignal ) ; % graph in time domain </strong><br>
+    <strong> subplot (212) , psd ( double ( inputSignal ) ) ; % in frequency domain </strong><br>
+    <strong> drawnow % Force the graphics to update immediately inside the loop </strong><br>
+    <strong>end</strong><br>
+</p>
+<p>
+Listagem 1.17 apresenta o sinal obtido (a partir do ADC) em ambos os dom&#237;nios de tempo e frequ&#234;ncia. Neste c&#243;digo, a chamada para    <strong>wavplay</strong> &#233; n&#227;o-bloqueio, mas as amostras s&#227;o perdidos no sentido de que <strong>inputSignal</strong> n&#227;o &#233; um
+    co-seno perfeito. Atrav&#233;s de um cabo de auto-retorno, como na Aplica&#231;&#227;o 3, permite avaliar o sistema.
+</p>
+
+<p>
+	<div align="center"><img src="./Assuntos/Application2/Application2.png"/></div>
+
+
+<p>
+Figura 1 foi obtida com um auto-retorno. Nota da trama superior que cerca de 300 amostras s&#227;o um transiente e depois disso pode-se ver o cosseno em    <em>fc</em> = 1500 Hz, que &#233; mapeado para 1500 / (<em>Fs</em> / 2) &#8776; 0,27 (<em>Fs</em> = 11025 Hz) na normalizada eixo da trama de fundo. A fim
+    de obter este tipo de sistema em funcionamento, &#233; importante reduzir o volume (ganho do DAC) para evitar a satura&#231;&#227;o dos sinais.
+</p>
+<p>
+    Como um exerc&#237;cio, digitalizar sinais a frequ&#234;ncias de amostragem diferentes e tra&#231;ar-los com os eixos devidamente normalizados. Outra
+    pesquisa interessante &#233; a obten&#231;&#227;o de um sinal de som <strong>inputSignal</strong>, digitalizadas a uma dada taxa (por exemplo, F s = 11,
+    025 Hz) e representado por int16. Convert&#234;-lo em dobro, com x = <strong>double (inputSignal)</strong>, a fim de manipular facilmente o sinal e
+    descrever o que &#233; o resultado de cada um dos seguintes comandos:
+</p>
+<p>
+    <strong>fs =22050; % sampling frequency </strong><br>
+    <strong>r = audiorecorder ( fs , 16 , 1) ; % create audiorecorder object </strong><br>
+    <strong>recordblocking (r ,5) ; % record 5 s and store inside object r </strong><br>
+    <strong>y = getaudiodata (r , ' int16 ') ; % retrieve samples as int16 </strong><br>
+    <strong>x = double ( y ) ; % convert from int16 to double</strong><br>
+    <strong>soundsc (x , fs ) ; % play at the sampling frequency </strong><br>
+    <strong>soundsc (x , round ( fs /2) ) ; % play at half of the sampling freq . </strong><br>
+    <strong>soundsc (x ,2* fs ) ; % play at twice the sampling frequency </strong><br>
+    <strong>w = x (1:2: end ) ; % keep only half of the samples </strong><br>
+    <strong>soundsc (w , fs ) ; % play at the original sampling frequency </strong><br>
+    <strong>z = zeros (2* length ( x ) ,1) ; % vector with twice the size of x </strong><br>
+    <strong>z (1:2: end ) = x ; % copy x into odd elements of z ( even are 0) </strong><br>
+    <strong>soundsc (z , fs ) ; % play at the original sampling frequency</strong><br>
+</p>
+<p>
+    Qual deve ser a frequ&#234;ncia de amostragem para vetores W e Z no c&#243;digo acima para<br>
+    ouvir corretamente o &#225;udio?
+</p>
+</p>
+
