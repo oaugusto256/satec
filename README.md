@@ -1,4 +1,4 @@
-![SATEC Logo](https://github.com/tavioalves/satec/blob/master/Imagens/Icones/logo.png)
+![SATEC Logo](https://github.com/tavioalves/satec/blob/master/Imagens/Icones/logo.png =25x25)
 # Sistema de Aprendizagem de Telecomunicações - SATEC
 ![Python](https://img.shields.io/badge/Python-v2.7.13-orange.svg) ![Version](https://img.shields.io/badge/version-1.0-green.svg) [![MIT](https://img.shields.io/dub/l/vibe-d.svg)]() 
 
