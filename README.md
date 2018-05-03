@@ -1,4 +1,4 @@
-# <img src="https://github.com/tavioalves/satec/blob/master/Imagens/Icones/icone.png" width="50px"> Sistema de Aprendizagem de Telecomunicações - SATEC
+# <img src="https://github.com/tavioalves/satec/blob/master/Imagens/Icones/icone.png" width="40px"> Sistema de Aprendizagem de Telecomunicações
 ![Python](https://img.shields.io/badge/Python-v2.7.13-orange.svg) ![Version](https://img.shields.io/badge/version-1.0-green.svg) [![MIT](https://img.shields.io/dub/l/vibe-d.svg)]() 
 
 ## What is?
@@ -7,13 +7,12 @@ SATEC is a telecommunication learning system for students in computer and teleco
 
 ## Installation
 
-You can clone the repository using git or download it from the button at the top.
+Clone the repository and move to the satec folder.
 
 ```sh
 $ git clone https://github.com/tavioalves/satec.git
 ````
-
-SATEC requires some libraries to work, please install them using the following commands:
+Execute the following commands to install the libraries.
 
 ```sh
 $ sudo apt-get install python-qt4-phonon
@@ -31,8 +30,12 @@ $ python main.py
 ```
 ## Problems
 
-Please, send an email explain the problem to me: tavioalves@gmail.com
+If you have a problem or see a bug. Please, create an issue explaning what happened, soon a developer will answer and solve the problem.
+
+## Feedbacks
+
+I will be glad to listen any constructive feedback. Please, send an email to me: tavioalves@gmail.com
 
 ## License
 
-MIT
+MIT © 2018
